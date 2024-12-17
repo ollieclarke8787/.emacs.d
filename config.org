@@ -128,7 +128,7 @@ https://protesilaos.com/codelog/2024-11-28-basic-emacs-configuration/
   (tool-bar-mode -1)
 #+end_src
 *** remove decorations
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (add-to-list 'default-frame-alist '(undecorated . t))
 #+end_src
 *** enable highlighting of current line in sources and texts
@@ -151,15 +151,6 @@ https://protesilaos.com/codelog/2024-11-28-basic-emacs-configuration/
     (electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit "be conservative in closing pairs, e.g., do not close pair when at beginning or in the middle of words")
     :hook
     (prog-mode . electric-pair-mode))
-#+end_src
-*** enable transparency
-#+begin_src emacs-lisp
-  (set-frame-parameter nil 'alpha-background 85)              ;; for current frame
-  (add-to-list 'default-frame-alist '(alpha-background . 85)) ;; for new frames henceforth
-  (defun yr/toggle-window-transparency ()
-    "Toggle current frame's background transparency."
-    (interactive)
-    (let* ((desired-alpha 85)) (set-frame-parameter nil 'alpha-background (if (not (frame-parameter nil 'alpha-background)) desired-alpha))))
 #+end_src
 ** modeline
 *** display column number
@@ -982,8 +973,8 @@ Load auctex, reftex, and flyspell when opening .tex files.
     (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
     (add-hook 'TeX-update-style-hook 'hl-todo-mode) ;; fix for hl-todo-mode
     :config
-    (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
-          TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
+    (setq TeX-view-program-selection '((output-pdf "Okular"))
+          TeX-view-program-list '("Okular" ("okular --unique file:%o" (mode-io-correlate "#src:%n%a")))
           TeX-source-correlate-mode t
           TeX-source-correlate-start-server t)
     <<tex-custom-highlighting>>
@@ -1137,7 +1128,7 @@ Load various company latex backends via cape for corfu (for autocomplete)
 ** pdf-tools
 Load pdf-tools to view pdfs as per instructions on
 https://github.com/vedang/pdf-tools
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package pdf-tools
     :custom
     (pdf-view-resize-factor 1.05) ;; decrease resizing factor for better control
