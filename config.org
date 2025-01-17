@@ -1176,15 +1176,16 @@ https://github.com/tpapp/julia-repl
     :after julia-mode                    ;; defer loading until julia-mode is started
     :hook (julia-mode . julia-repl-mode) ;; auto-activate when julia-mode is started
     :init
-    (setq exec-path (append exec-path '("/home/ren/.juliaup/bin")))
-    (add-to-list 'load-path "/home/ren/.juliaup/bin/julia")
-    :config
-    (julia-repl-set-terminal-backend 'vterm)) ;; use vterm (recommended)
+    (setq julia-repl-executable-records
+      '((default "/extra/tmp/qlsv71/bin/julia")                  ; in the executable path
+        (master "julia"))) ; compiled from the repository
+    (setq exec-path (append exec-path '("/extra/tmp/qlsv71/bin")))
+    (add-to-list 'load-path "/extra/tmp/qlsv71/bin/julia"))
 #+end_src
 ** eglot-jl
 Load eglot-js for language server support as per instructions on
 https://github.com/non-Jedi/eglot-jl
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package eglot-jl
     :after julia-mode            ;; defer loading until julia-mode is started
     :hook
@@ -1198,7 +1199,7 @@ https://github.com/non-Jedi/eglot-jl
 ** vterm
 Install vterm as per instructions on
 https://github.com/akermu/emacs-libvterm
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package vterm
     :after julia-mode) ;; defer loading until julia-mode is started
 #+end_src
@@ -1229,21 +1230,26 @@ Packages and customizations for LLMs
 ** Copilot
 Installing copilot as per the instructions on
 https://github.com/copilot-emacs/copilot.el
+and for copilot chat
+https://github.com/chep/copilot-chat.el
 #+begin_src emacs-lisp
   (use-package copilot
     :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
     :after julia-mode ;; defer loading after julia-mode has started
     :hook (julia-mode . copilot-mode)
     :custom
-    (copilot--base-dir "/home/ren/.emacs.d/straight/repos/copilot.el/")
+    (copilot--base-dir "/home/qlsv71/.emacs.d/straight/repos/copilot.el/")
     (copilot-indent-offset-warning-disable t) ;; disables a warning that always arises in tex-mode
     :bind (:map copilot-completion-map
            ("C-<tab>" . copilot-accept-completion)))
+  (use-package copilot-chat
+  :straight (:host github :repo "chep/copilot-chat.el" :files ("*.el"))
+  :after (request org markdown-mode shell-maker))
 #+end_src
 ** GPTel
 Installing GPTel as per instructions on
 https://github.com/karthink/gptel
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package gptel
     :commands gptel) ;; defer loading after gptel is called
 #+end_src
